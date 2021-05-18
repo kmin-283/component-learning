@@ -19,11 +19,32 @@ class App {
       const { items } = this.states;
       this.setState({ items: [...items, `${items.length + 1}`] });
     });
+
+    const deleteBtns = this.parent.querySelectorAll(".deleteBtn");
+    deleteBtns.forEach((button) => {
+      const deleteBtn = button! as HTMLButtonElement;
+      deleteBtn.addEventListener("click", (e) => {
+        const target = e.target! as HTMLButtonElement;
+        const delIdx = target.dataset["index"];
+        const items = [...this.states.items];
+        items.splice(+delIdx! as number, 1);
+        this.setState({ items });
+      });
+    });
   }
   render() {
     const template: string = `
     <ul>
-      ${this.states.items.map((item) => `<li>${item}</li>`).join("")}
+      ${this.states.items
+        .map(
+          (item, index) => `
+      <li>
+      ${item}
+      <button class="deleteBtn" data-index="${index}">삭제</button>
+      </li>
+      `
+        )
+        .join("")}
     </ul>
     <button class="add">추가하기</button>
     `;
