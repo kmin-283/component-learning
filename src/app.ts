@@ -8,6 +8,7 @@ class App {
     this.states = {
       items: ["1", "2"],
     };
+    this.setEvent();
     this.render();
   }
   setState(nextState: appType) {
@@ -15,21 +16,24 @@ class App {
     this.render();
   }
   setEvent() {
-    this.parent.querySelector(".add")?.addEventListener("click", () => {
+    this.parent.addEventListener("click", (e) => {
       const { items } = this.states;
-      this.setState({ items: [...items, `${items.length + 1}`] });
-    });
+      console.log(e.target);
+      if (
+        e.target instanceof HTMLButtonElement &&
+        e.target.classList.contains("add")
+      ) {
+        this.setState({ items: [...items, `${items.length + 1}`] });
+      }
 
-    const deleteBtns = this.parent.querySelectorAll(".deleteBtn");
-    deleteBtns.forEach((button) => {
-      const deleteBtn = button! as HTMLButtonElement;
-      deleteBtn.addEventListener("click", (e) => {
-        const target = e.target! as HTMLButtonElement;
-        const delIdx = target.dataset["index"];
-        const items = [...this.states.items];
+      if (
+        e.target instanceof HTMLButtonElement &&
+        e.target.classList.contains("deleteBtn")
+      ) {
+        const delIdx = e.target.dataset["index"];
         items.splice(+delIdx! as number, 1);
         this.setState({ items });
-      });
+      }
     });
   }
   render() {
@@ -49,7 +53,6 @@ class App {
     <button class="add">추가하기</button>
     `;
     this.parent.innerHTML = template;
-    this.setEvent();
   }
 }
 
